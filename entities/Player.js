@@ -32,6 +32,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   die(onComplete) {
+    console.log('[PLAYER] Player die method called');
     this.body.setEnable(false);
     this.setTint(0xff0000);
     this.setVelocity(-50, -250);
@@ -41,7 +42,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       angle: 360,
       duration: 800,
       ease: 'Power2',
-      onComplete
+      onComplete: () => {
+        console.log('[PLAYER] Player die animation completed');
+        if (onComplete) onComplete();
+      }
     });
   }
 }

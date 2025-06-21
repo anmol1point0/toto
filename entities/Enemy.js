@@ -36,20 +36,25 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
     
     const distanceToPlayer = Phaser.Math.Distance.Between(this.x, this.y, this.player.x, this.player.y);
+    
     if (distanceToPlayer > 350) {
-        this.setVelocityX(Phaser.Math.RND.pick([-50, 50]));
+        const randomVelocity = Phaser.Math.RND.pick([-50, 50]);
+        this.setVelocityX(randomVelocity);
     } else {
         const direction = Math.sign(this.player.x - this.x);
         this.setVelocityX(direction * 80);
+        
         if (Math.random() < 0.4 && this.body.touching.down) {
             this.setVelocityY(-350);
         }
     }
+    
     this.decisionTimer.delay = Phaser.Math.Between(800, 2000);
   }
   
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
+    
     if (this.body.velocity.x > 0) this.flipX = false;
     else if (this.body.velocity.x < 0) this.flipX = true;
   }

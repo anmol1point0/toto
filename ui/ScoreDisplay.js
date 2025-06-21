@@ -20,13 +20,17 @@ export class ScoreDisplay {
   }
 
   updateScore(points) {
+    const oldScore = this.score;
     this.score += points;
     this.scoreText.setText('Score: ' + this.score);
+    console.log(`[SCORE] Score updated: ${oldScore} + ${points} = ${this.score}`);
   }
 
   setScore(score) {
+    const oldScore = this.score;
     this.score = score;
     this.scoreText.setText('Score: ' + this.score);
+    console.log(`[SCORE] Score set: ${oldScore} -> ${this.score}`);
   }
 
   getScore() {

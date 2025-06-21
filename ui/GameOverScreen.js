@@ -21,6 +21,8 @@ export class GameOverScreen {
   }
 
   show(score, onRestartCallback) {
+    console.log(`[GAMEOVER] Game over screen shown with score: ${score}`);
+    
     this.scoreText.setText('Your Score: ' + score);
     this.container.setVisible(true);
     this.container.setAlpha(0);
@@ -32,7 +34,10 @@ export class GameOverScreen {
       ease: 'Power2'
     });
 
-    this.scene.input.keyboard.once('keydown-R', onRestartCallback);
+    this.scene.input.keyboard.once('keydown-R', () => {
+      console.log('[GAMEOVER] Restart key pressed');
+      onRestartCallback();
+    });
   }
 
   hide() {

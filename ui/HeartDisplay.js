@@ -31,7 +31,10 @@ export class HeartDisplay extends Phaser.GameObjects.Group {
   }
 
   updateLives(lives) {
+    const oldLives = this.currentLives;
     this.currentLives = Math.max(0, Math.min(lives, this.maxLives));
+    
+    console.log(`[HEARTS] Lives updated: ${oldLives} -> ${this.currentLives}`);
     
     this.getChildren().forEach((heart, index) => {
         heart.setVisible(index < this.currentLives);

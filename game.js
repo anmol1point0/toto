@@ -2,6 +2,19 @@ import { Player } from './entities/index.js';
 import { Enemy } from './entities/index.js';
 import { ScoreDisplay, HeartDisplay, GameOverScreen } from './ui/index.js';
 
+// Simple logger utility - only log important events
+const Logger = {
+    info: (message, data = null) => {
+        console.log(`[GAME] ${message}`, data || '');
+    },
+    warn: (message, data = null) => {
+        console.warn(`[GAME] ${message}`, data || '');
+    },
+    error: (message, data = null) => {
+        console.error(`[GAME] ${message}`, data || '');
+    }
+};
+
 let platforms, movingPlatforms, coins, enemies, scoreDisplay, heartDisplay, gameOverScreen;
 let player;
 let lives;
@@ -305,6 +318,7 @@ function spawnWorldObjects(scene, playerX) {
 
 function cleanupWorldObjects(playerX) {
     const cleanupBuffer = 400; 
+    const initialCount = worldObjects.length;
     
     worldObjects = worldObjects.filter(item => {
         const objectRightEdge = item.obj.x + (item.obj.width || 0);
@@ -326,6 +340,12 @@ function cleanupWorldObjects(playerX) {
         }
         return true;
     });
+    
+    const finalCount = worldObjects.length;
+    const cleanedCount = initialCount - finalCount;
+    if (cleanedCount > 10) {
+        Logger.info(`Cleaned up ${cleanedCount} objects, ${finalCount} remaining`);
+    }
 }
 
 function preload() {
@@ -457,6 +477,7 @@ function create() {
 
 
 function reachLevelEnd(player, flag) {
+    Logger.info('Player reached level end!');
     // Stop the camera from following the player
     this.cameras.main.stopFollow();
     
@@ -508,11 +529,13 @@ function collectCoin(player, coin) {
 }
 
 function handlePlayerDamage(scene, player) {
-    if (!player.active) return;
+    if (!player.active) {
+        return;
+    }
 
     lives--;
     heartDisplay.updateLives(lives);
-    console.log('Player took damage! Lives remaining:', lives);
+    Logger.warn(`Player took damage! Lives remaining: ${lives}`);
     player.body.setEnable(false); // More robust than setActive
 
     if (lives > 0) {
@@ -528,23 +551,21 @@ function handlePlayerDamage(scene, player) {
         });
         
     } else {
-        console.log('Player has no lives left! Showing game over screen...');
+        Logger.error('Player has no lives left! Showing game over screen...');
         player.die(() => {
-            console.log('Player die animation completed, showing game over screen');
             scene.physics.pause();
             if (gameOverScreen) {
                 gameOverScreen.show(scoreDisplay.getScore(), () => {
                     scene.scene.restart();
                 });
             } else {
-                console.error('GameOverScreen is not available!');
+                Logger.error('GameOverScreen is not available!');
             }
         });
         
         // Fallback: if player.die() doesn't work, show game over screen directly
         scene.time.delayedCall(1000, () => {
             if (gameOverScreen && !gameOverScreen.visible) {
-                console.log('Fallback: showing game over screen directly');
                 scene.physics.pause();
                 gameOverScreen.show(scoreDisplay.getScore(), () => {
                     scene.scene.restart();
@@ -555,8 +576,8 @@ function handlePlayerDamage(scene, player) {
 }
 
 function hitEnemy(player, enemy) {
-  if (!player.active) return;
-  handlePlayerDamage(this, player);
+    if (!player.active) return;
+    handlePlayerDamage(this, player);
 }
 
 function update() {
@@ -569,25 +590,28 @@ function update() {
     
     // Manual world bounds check for the player - die when falling below the game screen
     if (player.y > 650 && player.active) {
-        console.log('Player fell into pit! Y position:', player.y);
+        Logger.warn('Player fell into pit!');
         handlePlayerDamage(this, player);
     }
     
     // Additional check: if player is below camera view, they should die
     const cameraBottom = this.cameras.main.scrollY + this.cameras.main.height;
     if (player.y > cameraBottom + 50 && player.active) {
-        console.log('Player fell below camera! Y position:', player.y, 'Camera bottom:', cameraBottom);
+        Logger.warn('Player fell below camera!');
         handlePlayerDamage(this, player);
     }
     
     // Prevent player from going too far left off-screen
     if (player.x < this.cameras.main.scrollX - player.width) {
+        Logger.warn('Player went too far left off-screen');
         handlePlayerDamage(this, player); // Treat going too far back as falling
     }
 
     // Update moving platform directions
     movingPlatforms.children.iterate(platform => {
-        if (!platform.body) return; // Safety check in case a platform is destroyed
+        if (!platform.body) {
+            return; // Safety check in case a platform is destroyed
+        }
 
         if (platform.x <= platform.moveStart) {
             platform.body.setVelocityX(Math.abs(platform.body.velocity.x));
