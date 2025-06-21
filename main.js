@@ -16,7 +16,10 @@ const config = {
   scene: [LevelSelectionScene, GameScene], // Start with LevelSelectionScene first
   scale: {
     mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    parent: 'game-container',
+    width: 800,
+    height: 600
   },
   render: {
     pixelArt: false,
