@@ -11,6 +11,14 @@ let lastSpawnX = 0; // Track where we last generated a chunk
 let worldObjects = []; // Track all spawned objects for cleanup
 let backgroundLayers = []; // Track background elements for parallax
 
+/**
+ * Procedurally generates a repeating brick texture.
+ * This avoids external asset loading issues.
+ * @param {Phaser.Scene} scene The scene to create the texture in.
+ * @param {string} key The key to assign to the new texture.
+ * @param {number} width The width of the texture swatch.
+ * @param {number} height The height of the texture swatch.
+ */
 function createBrickTexture(scene, key, width = 64, height = 64) {
     const graphics = scene.make.graphics({ x: 0, y: 0, add: false });
 
@@ -51,6 +59,11 @@ function createCoinTexture(scene, key, size = 16) {
     graphics.destroy();
 }
 
+/**
+ * Procedurally generates an "evil" enemy texture.
+ * @param {Phaser.Scene} scene The scene to create the texture in.
+ * @param {string} key The key to assign to the new texture.
+ */
 function createEnemyTexture(scene, key) {
     const graphics = scene.make.graphics({ x: 0, y: 0, add: false });
     const size = 32;
@@ -71,6 +84,11 @@ function createEnemyTexture(scene, key) {
     graphics.destroy();
 }
 
+/**
+ * Procedurally generates a flag texture for the end of the level.
+ * @param {Phaser.Scene} scene The scene to create the texture in.
+ * @param {string} key The key to assign to the new texture.
+ */
 function createFlagTexture(scene, key) {
     const graphics = scene.make.graphics({ x: 0, y: 0, add: false });
     // Flagpole
@@ -84,6 +102,9 @@ function createFlagTexture(scene, key) {
     graphics.destroy();
 }
 
+/**
+ * Creates background elements for parallax scrolling effect
+ */
 function createBackgroundLayers(scene) {
     // Far background (clouds) - moves slowly
     for (let i = 0; i < 10; i++) {
@@ -140,12 +161,20 @@ function createBackgroundLayers(scene) {
     }
 }
 
+/**
+ * Updates background elements for parallax scrolling
+ */
 function updateBackgroundLayers(cameraX) {
     backgroundLayers.forEach(layer => {
         layer.obj.tilePositionX = cameraX * layer.speed;
     });
 }
 
+/**
+ * Creates a segment of solid ground and populates it with items.
+ * @param {Phaser.Scene} scene The scene to add to.
+ * @param {number} length The length of the ground segment.
+ */
 function createGroundSegment(scene, length) {
     const ground = scene.add.tileSprite(lastSpawnX, 580, length, 40, 'bricks');
     ground.setOrigin(0, 0); // Standardize origin
@@ -221,6 +250,9 @@ function createGroundSegment(scene, length) {
     lastSpawnX += length;
 }
 
+/**
+ * Spawns world chunks, with a low chance of pits.
+ */
 function spawnWorldObjects(scene, playerX) {
     const spawnTriggerX = scene.cameras.main.scrollX + scene.cameras.main.width;
 
@@ -303,6 +335,9 @@ function spawnWorldObjects(scene, playerX) {
     }
 }
 
+/**
+ * Cleans up objects that are far behind the player
+ */
 function cleanupWorldObjects(playerX) {
     const cleanupBuffer = 400; 
     
@@ -400,6 +435,8 @@ function create() {
     this.physics.add.overlap(player, coins, collectCoin, null, this);
     this.physics.add.overlap(player, flag, reachLevelEnd, null, this);
     
+    // Create simple background music using built-in audio generation
+    // createBackgroundMusic(this);
 
     this.anims.create({
         key: 'spin',
@@ -455,6 +492,70 @@ function create() {
     });
 }
 
+/**
+ * Creates a simple background music using built-in audio generation
+ */
+/*
+function createBackgroundMusic(scene) {
+    // Create a simple melody pattern
+    const melody = [
+        { note: 'C4', duration: 500 },
+        { note: 'E4', duration: 500 },
+        { note: 'G4', duration: 500 },
+        { note: 'C5', duration: 500 },
+        { note: 'G4', duration: 500 },
+        { note: 'E4', duration: 500 },
+        { note: 'C4', duration: 1000 }
+    ];
+    
+    let currentNote = 0;
+    
+    // Play the melody in a loop
+    const playMelody = () => {
+        if (scene.sound && scene.sound.context) {
+            const note = melody[currentNote];
+            const frequency = getNoteFrequency(note.note);
+            
+            // Create a simple sine wave tone
+            const oscillator = scene.sound.context.createOscillator();
+            const gainNode = scene.sound.context.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(scene.sound.context.destination);
+            
+            oscillator.frequency.setValueAtTime(frequency, scene.sound.context.currentTime);
+            oscillator.type = 'sine';
+            
+            // Fade in and out for smooth sound
+            gainNode.gain.setValueAtTime(0, scene.sound.context.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.1, scene.sound.context.currentTime + 0.1);
+            gainNode.gain.linearRampToValueAtTime(0, scene.sound.context.currentTime + note.duration / 1000);
+            
+            oscillator.start(scene.sound.context.currentTime);
+            oscillator.stop(scene.sound.context.currentTime + note.duration / 1000);
+            
+            currentNote = (currentNote + 1) % melody.length;
+            
+            // Schedule next note
+            scene.time.delayedCall(note.duration, playMelody);
+        }
+    };
+    
+    // Start the melody after a short delay
+    scene.time.delayedCall(1000, playMelody);
+}
+
+/**
+ * Converts musical note to frequency
+ */
+function getNoteFrequency(note) {
+    const notes = {
+        'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23,
+        'G4': 392.00, 'A4': 440.00, 'B4': 493.88, 'C5': 523.25
+    };
+    return notes[note] || 440;
+}
+*/
 
 function reachLevelEnd(player, flag) {
     // Stop the camera from following the player
