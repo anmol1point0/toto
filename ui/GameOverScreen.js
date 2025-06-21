@@ -2,40 +2,45 @@ export class GameOverScreen {
   constructor(scene) {
     this.scene = scene;
 
-    const style = {
-      fontSize: '48px',
-      fill: '#ff0000',
-      fontFamily: 'Arial',
-      align: 'center',
-      stroke: '#000',
-      strokeThickness: 4
-    };
-
     this.container = this.scene.add.container(400, 300).setVisible(false);
+    this.container.setDepth(1000);
 
-    const gameOverTitle = this.scene.add.text(0, -60, 'Game Over', style).setOrigin(0.5);
-    this.scoreText = this.scene.add.text(0, 20, 'Score: 0', { ...style, fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
-    const restartText = this.scene.add.text(0, 80, 'Press R to Restart', { ...style, fontSize: '24px', fill: '#fff' }).setOrigin(0.5);
+    // Simple game over text
+    const gameOverTitle = this.scene.add.text(0, -30, 'Game Over', { 
+      fontSize: '36px',
+      fill: '#ffffff',
+      fontFamily: 'Arial, sans-serif'
+    }).setOrigin(0.5);
+    
+    // Simple score text
+    this.scoreText = this.scene.add.text(0, 10, 'Score: 0', { 
+      fontSize: '24px', 
+      fill: '#ffffff',
+      fontFamily: 'Arial, sans-serif'
+    }).setOrigin(0.5);
+    
+    // Simple restart text
+    const restartText = this.scene.add.text(0, 50, 'Press R to Restart', { 
+      fontSize: '18px', 
+      fill: '#ffffff',
+      fontFamily: 'Arial, sans-serif'
+    }).setOrigin(0.5);
     
     this.container.add([gameOverTitle, this.scoreText, restartText]);
   }
 
   show(score, onRestartCallback) {
-    console.log(`[GAMEOVER] Game over screen shown with score: ${score}`);
+    if (score === undefined || score === null) {
+      score = 0;
+    }
     
-    this.scoreText.setText('Your Score: ' + score);
+    this.scoreText.setText(`Score: ${score}`);
+    
+    const cam = this.scene.cameras.main;
+    this.container.setPosition(cam.scrollX + cam.width / 2, cam.scrollY + cam.height / 2);
     this.container.setVisible(true);
-    this.container.setAlpha(0);
-
-    this.scene.tweens.add({
-      targets: this.container,
-      alpha: 1,
-      duration: 500,
-      ease: 'Power2'
-    });
 
     this.scene.input.keyboard.once('keydown-R', () => {
-      console.log('[GAMEOVER] Restart key pressed');
       onRestartCallback();
     });
   }

@@ -9,19 +9,40 @@
             margin: 0;
             padding: 0;
             height: 100%;
+            width: 100%;
             overflow: hidden;
             background-color: #333;
+            font-family: Arial, sans-serif;
         }
+        
+        #game-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
         canvas {
             display: block;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Chrome Extension popup specific styles */
+        body {
+            min-width: 800px;
+            min-height: 600px;
+            max-width: 800px;
+            max-height: 600px;
         }
     </style>
 </head>
 <body>
-    <script type="module" src="game.js"></script>
+    <div id="game-container">
+        <!-- Game will be rendered here -->
+    </div>
+    <script type="module" src="main.js"></script>
 </body>
 </html> 

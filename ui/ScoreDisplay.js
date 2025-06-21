@@ -11,12 +11,20 @@ export class ScoreDisplay {
   createScoreText() {
     this.scoreText = this.scene.add.text(this.x, this.y, 'Score: 0', {
       fontSize: '20px',
-      fill: '#fff',
+      fill: '#ffffff',
       fontFamily: 'Arial',
-      stroke: '#000',
-      strokeThickness: 2
+      stroke: '#000000',
+      strokeThickness: 4,
+      shadow: {
+        offsetX: 1,
+        offsetY: 1,
+        color: '#000000',
+        blur: 2,
+        fill: true
+      }
     });
     this.scoreText.setScrollFactor(0);
+    this.scoreText.setDepth(100); // Ensure it's always on top
   }
 
   updateScore(points) {

@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Mini Platformer Game",
+  "version": "1.0.0",
+  "description": "A fun Mario-style platformer game that works offline",
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Play Mini Platformer"
+  },
+  "offline_enabled": true,
+  "default_icon": {
+    "16": "icon.png",
+    "32": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "icons": {
+    "16": "icon.png",
+    "32": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "permissions": [],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' https://cdn.jsdelivr.net; object-src 'self'"
+  }
+} 
