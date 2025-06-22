@@ -1,0 +1,37 @@
+{
+  "name": "mini-platformer-chrome-extension",
+  "version": "1.0.0",
+  "description": "A fun Mario-style platformer game that works as a Chrome Extension, similar to the Chrome Dinosaur Game.",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "dev": "python3 -m http.server 8000",
+    "build": "echo 'Building Chrome Extension...' && zip -r mini-platformer-extension.zip . -x '*.git*' 'node_modules/*' '*.DS_Store' 'package*.json' 'README.md' 'CHROME_EXTENSION_SETUP.md'",
+    "clean": "rm -f mini-platformer-extension.zip",
+    "test": "echo 'No tests specified yet'",
+    "lint": "echo 'No linter configured yet'",
+    "serve": "python3 -m http.server 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anmol1point0/toto.git"
+  },
+  "keywords": [
+    "game",
+    "platformer",
+    "chrome-extension",
+    "phaser",
+    "javascript",
+    "html5-game"
+  ],
+  "author": "anmol1point0",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/anmol1point0/toto/issues"
+  },
+  "homepage": "https://github.com/anmol1point0/toto#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
