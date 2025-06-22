@@ -5,9 +5,10 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
+    "postinstall": "cp node_modules/phaser/dist/phaser.min.js ./phaser.min.js && cp node_modules/@poki/phaser-3/dist/phaser-poki.js ./poki-plugin.js",
     "start": "python3 -m http.server 8000 || python3 -m http.server 8001",
     "dev": "python3 -m http.server 8000 || python3 -m http.server 8001",
-    "build": "echo 'Building Chrome Extension...' && zip -r mini-platformer-extension.zip . -x '*.git*' 'node_modules/*' '*.DS_Store' 'package*.json' 'README.md' 'CHROME_EXTENSION_SETUP.md'",
+    "build": "echo 'Building Chrome Extension...' && zip -r mini-platformer-extension.zip . -x '*.git*' 'node_modules/*' '*.DS_Store' 'package*.json' 'README.md' 'CHROME_EXTENSION_SETUP.md' 'INSTALLATION.md'",
     "clean": "rm -f mini-platformer-extension.zip",
     "test": "echo 'No tests specified yet'",
     "lint": "echo 'No linter configured yet'",
@@ -36,5 +37,8 @@
   },
   "devDependencies": {
     "@poki/phaser-3": "^0.0.5"
+  },
+  "dependencies": {
+    "phaser": "^3.60.0"
   }
 }

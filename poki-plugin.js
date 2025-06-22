@@ -161,10 +161,5 @@ class $66a613ab66341f23$export$176a0ece5b97d00d extends (0, $gvRdH$phaser.Plugin
 
 $parcel$exportWildcard(module.exports, $66a613ab66341f23$exports);
 
-// Browser compatibility - make PokiPlugin available globally
-if (typeof window !== 'undefined') {
-    window.PokiPlugin = $66a613ab66341f23$export$176a0ece5b97d00d;
-    window.EVENT_INITIALIZED = $66a613ab66341f23$export$7d17243235f36b85;
-}
 
 //# sourceMappingURL=phaser-poki.js.map
