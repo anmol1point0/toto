@@ -1,7 +1,5 @@
 import { LevelSelectionScene } from './scenes/LevelSelectionScene.js';
 import { GameScene } from './scenes/GameScene.js';
-// @ts-ignore
-import { PokiPlugin } from '@poki/phaser-3'
 
 const config = {
   type: Phaser.AUTO,
@@ -30,7 +28,7 @@ const config = {
   plugins: {
     global: [
       {
-        plugin: PokiPlugin,
+        plugin: window.PokiPlugin,
         key: 'poki',
         start: true, // must be true, in order to load
         data: {
