@@ -25,42 +25,35 @@ $parcel$export($66a613ab66341f23$exports, "EVENT_INITIALIZED", () => $66a613ab66
 $parcel$export($66a613ab66341f23$exports, "PokiPlugin", () => $66a613ab66341f23$export$176a0ece5b97d00d);
 
 const $66a613ab66341f23$export$7d17243235f36b85 = "poki:initialized";
+
+// Mock Poki SDK for offline functionality
+const MockPokiSDK = {
+    init: () => Promise.resolve(),
+    gameLoadingStart: () => console.log('[Poki] Game loading started'),
+    gameLoadingFinished: () => console.log('[Poki] Game loading finished'),
+    gameplayStart: () => console.log('[Poki] Gameplay started'),
+    gameplayStop: () => console.log('[Poki] Gameplay stopped'),
+    commercialBreak: () => Promise.resolve(false),
+    rewardedBreak: () => Promise.resolve(false)
+};
+
 class $66a613ab66341f23$export$176a0ece5b97d00d extends (0, $gvRdH$phaser.Plugins).BasePlugin {
     init({ loadingSceneKey: loadingSceneKey , gameplaySceneKey: gameplaySceneKey , autoCommercialBreak: autoCommercialBreak  }) {
         this._loadingSceneKey = loadingSceneKey;
         this._gameplaySceneKey = gameplaySceneKey;
         this._autoCommercialBreak = autoCommercialBreak;
-        this._scriptLoaded = false;
+        this._scriptLoaded = true; // Always true for offline mode
         this._initializeHooks = [];
         this._queue = [];
-        this.initialized = false;
-        this.hasAdblock = true;
-        const script = document.createElement("script");
-        script.setAttribute("type", "text/javascript");
-        script.setAttribute("src", "https://game-cdn.poki.com/scripts/v2/poki-sdk.js");
-        script.addEventListener("load", ()=>{
-            this.sdk = window.PokiSDK;
-            this._scriptLoaded = true;
-            this._queue.forEach((f)=>f());
-            this.sdk.init().then(()=>{
-                this.initialized = true;
-                this.hasAdblock = false;
-                this.game.events.emit($66a613ab66341f23$export$7d17243235f36b85, this);
-                this._initializeHooks.forEach((f)=>f(this));
-                this._initializeHooks = undefined;
-            }).catch((err)=>{
-                console.error("PokiSDK failed", err);
-                this.initialized = true;
-                this.hasAdblock = true;
-                this.game.events.emit($66a613ab66341f23$export$7d17243235f36b85, this);
-                this._initializeHooks.forEach((f)=>f(this));
-                this._initializeHooks = undefined;
-            });
-        });
-        script.addEventListener("error", (e)=>{
-            console.error("failed to load PokiSDK", e);
-        });
-        document.head.appendChild(script);
+        this.initialized = true; // Always initialized for offline mode
+        this.hasAdblock = true; // Always true for offline mode
+        this.sdk = MockPokiSDK; // Use mock SDK
+        
+        // Emit initialized event immediately
+        this.game.events.emit($66a613ab66341f23$export$7d17243235f36b85, this);
+        this._initializeHooks.forEach((f)=>f(this));
+        this._initializeHooks = undefined;
+        
         this._currentScenes = [];
     }
     runWhenInitialized(callback) {
@@ -91,10 +84,8 @@ class $66a613ab66341f23$export$176a0ece5b97d00d extends (0, $gvRdH$phaser.Plugin
                 this._currentScenes.push(name);
                 if (name === this._loadingSceneKey) this.gameLoadingStart();
                 if (name === this._gameplaySceneKey) {
-                    if (this._scriptLoaded && this._autoCommercialBreak && !this.hasAdblock) this.commercialBreak().then(()=>{
-                        this.gameplayStart();
-                    });
-                    else this.gameplayStart();
+                    // Skip commercial breaks in offline mode
+                    this.gameplayStart();
                 }
             }
         });
@@ -143,17 +134,7 @@ class $66a613ab66341f23$export$176a0ece5b97d00d extends (0, $gvRdH$phaser.Plugin
     }
     _break(type) {
         if (type !== "commercial" && type !== "rewarded") throw new Error('type must be "commercial" or "rewarded"');
-        if (this.initialized && !this.hasAdblock) return new Promise((resolve)=>{
-            const wasKeyboardEnbaled = this.game.input.keyboard.enabled;
-            this.game.input.keyboard.enabled = false;
-            const wasMuted = this.game.sound.mute;
-            this.game.sound.mute = true;
-            this.sdk[`${type}Break`]().then((success)=>{
-                if (wasKeyboardEnbaled) this.game.input.keyboard.enabled = true;
-                if (!wasMuted) this.game.sound.mute = false;
-                resolve(success);
-            });
-        });
+        // In offline mode, always return false (no ads)
         return Promise.resolve(false);
     }
 }
@@ -161,5 +142,10 @@ class $66a613ab66341f23$export$176a0ece5b97d00d extends (0, $gvRdH$phaser.Plugin
 
 $parcel$exportWildcard(module.exports, $66a613ab66341f23$exports);
 
+// Browser compatibility - make PokiPlugin available globally
+if (typeof window !== 'undefined') {
+    window.PokiPlugin = $66a613ab66341f23$export$176a0ece5b97d00d;
+    window.EVENT_INITIALIZED = $66a613ab66341f23$export$7d17243235f36b85;
+}
 
 //# sourceMappingURL=phaser-poki.js.map

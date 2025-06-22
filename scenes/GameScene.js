@@ -169,9 +169,9 @@ export class GameScene extends Phaser.Scene {
         this.createEnemyTexture('enemy');
         this.createFlagTexture('flag');
         this.createHeartTexture('heart');
-        this.load.image('ground', 'https://labs.phaser.io/assets/sprites/platform.png');
-        this.load.image('player', 'https://labs.phaser.io/assets/sprites/phaser-dude.png');
-        this.load.spritesheet('coin', 'https://labs.phaser.io/assets/sprites/coin.png', {
+        this.load.image('ground', 'assets/images/ground.png');
+        this.load.image('player', 'assets/images/player.png');
+        this.load.spritesheet('coin', 'assets/images/coin.png', {
             frameWidth: 32,
             frameHeight: 32
         });
